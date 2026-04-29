@@ -14,6 +14,7 @@ public class EmailService {
     public void sendOtp(String toEmail, String otp) {
 
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("veloraappltd@gmail.com");
         message.setTo(toEmail);
         message.setSubject("🎁 Velora - Verify Your Email");
 
