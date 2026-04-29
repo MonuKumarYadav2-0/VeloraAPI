@@ -45,7 +45,8 @@ public class SecurityConfig {
                         "/dashboard/**",
                         "/recommendations/**",
                         "/help/**",
-                        "/login/**"
+                        "/login/**",
+                       
                 ).permitAll()
 
                 // AUTH
@@ -57,7 +58,8 @@ public class SecurityConfig {
 
                 // PUBLIC PRODUCT APIs
                 .requestMatchers("/api/products/**").permitAll()
-
+                .requestMatchers("/api/ratings/**").permitAll()
+                 
                 // baaki secure
                 .anyRequest().authenticated()
             )
