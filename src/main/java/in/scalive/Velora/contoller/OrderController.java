@@ -62,7 +62,7 @@ public class OrderController {
 	   return ResponseEntity.ok(ApiResponseDTO.success("Fetched "+orders.size()+" orders",orders));
    }
    
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+   // @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @GetMapping
    public ResponseEntity<ApiResponseDTO<PageResponseDTO<OrderResponseDTO>>> getAllOrdersPaginated(
 		   @RequestParam(defaultValue = "0") int page,
