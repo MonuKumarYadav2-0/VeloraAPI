@@ -1,5 +1,5 @@
 package in.scalive.Velora.service.impl;
-
+@Service
 public class EmailService {
 
     @Autowired
