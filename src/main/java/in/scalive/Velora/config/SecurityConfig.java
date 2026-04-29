@@ -37,7 +37,7 @@ public class SecurityConfig {
                 // REACT ROUTES (SPA PATHS) - direct refresh safe
                 .requestMatchers(
                         "/shop/**",
-                        "/product/**",
+                        "/products/**",
                         "/cart/**",
                         "/checkout/**",
                         "/orders/**",
