@@ -1,52 +1,92 @@
 package in.scalive.Velora.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.*;
+import com.sendgrid.helpers.mail.objects.*;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Value("${sendgrid.api.key}")
+    private String apiKey;
 
+    @Value("${app.mail.from}")
+    private String fromEmail;
+
+    // 🔐 OTP MAIL
     public void sendOtp(String toEmail, String otp) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        //message.setFrom("veloraappltd@gmail.com");
-        message.setTo(toEmail);
-        message.setSubject("🎁 Velora - Verify Your Email");
+        try {
+            Email from = new Email(fromEmail); // verified sender
+            Email to = new Email(toEmail);
 
-        message.setText(
-            "Hi there! 👋" +
-            "Welcome to Velora – where every gift tells a story 🎀" +
-            "To complete your registration, please use the OTP below:" +
-            "🔐 OTP: " + otp +
-            " This OTP is valid for 5 minutes." +
-            "If you didn’t request this, you can safely ignore this email.\n\n" +
-            "With love 💖," +
-            "Team Velora ✨"
-        );
-        mailSender.send(message);
-   }
-    
+            String subject = "🎁 Velora - Verify Your Email";
+
+            Content content = new Content(
+                "text/html",
+                "<h2>Hi there! 👋</h2>" +
+                "<p>Welcome to <b>Velora</b> – where every gift tells a story 🎀</p>" +
+                "<p>Your OTP is:</p>" +
+                "<h1 style='color:#ff4d6d;'>" + otp + "</h1>" +
+                "<p>This OTP is valid for 5 minutes.</p>" +
+                "<p>If you didn’t request this, ignore this email.</p>" +
+                "<br><p>With love 💖,<br>Team Velora ✨</p>"
+            );
+
+            Mail mail = new Mail(from, subject, to, content);
+
+            SendGrid sg = new SendGrid(apiKey);
+
+            Request request = new Request();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+
+            Response response = sg.api(request);
+
+            System.out.println("OTP Mail Status: " + response.getStatusCode());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 🎉 WELCOME MAIL
     public void sendWelcomeEmail(String toEmail, String name) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(toEmail);
-        message.setSubject("🎉 Welcome to Velora!");
+        try {
+            Email from = new Email(fromEmail);
+            Email to = new Email(toEmail);
 
-        message.setText(
-            "Hi " + name + " 👋" +
-            "Welcome to Velora – where every gift tells a story 🎁✨" +
-            "Your account has been successfully created 🎉" +
-            "Now you can explore a world full of beautiful gifts and surprises 💝" +
-            "Start your journey with us and make every moment special!" +
-            "With love 💖," +
-            "Team Velora ✨"
-        );
+            String subject = "🎉 Welcome to Velora!";
 
-        mailSender.send(message);
+            Content content = new Content(
+                "text/html",
+                "<h2>Hi " + name + " 👋</h2>" +
+                "<p>Welcome to <b>Velora</b> – where every gift tells a story 🎁✨</p>" +
+                "<p>Your account has been successfully created 🎉</p>" +
+                "<p>Explore beautiful gifts and make every moment special 💝</p>" +
+                "<br><p>With love 💖,<br>Team Velora ✨</p>"
+            );
+
+            Mail mail = new Mail(from, subject, to, content);
+
+            SendGrid sg = new SendGrid(apiKey);
+
+            Request request = new Request();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+
+            Response response = sg.api(request);
+
+            System.out.println("Welcome Mail Status: " + response.getStatusCode());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
