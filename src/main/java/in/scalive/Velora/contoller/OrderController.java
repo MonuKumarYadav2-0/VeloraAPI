@@ -48,21 +48,21 @@ public class OrderController {
 	   return ResponseEntity.ok(ApiResponseDTO.success(order));
    }
 
-   @PreAuthorize("hasRole('USER')")
+   @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @GetMapping("/orderNumber/{orderNumber}")
    public ResponseEntity<ApiResponseDTO<OrderResponseDTO>> getOrderByOrderNumber(@PathVariable String orderNumber){
 	   OrderResponseDTO order=serv.getOrderByOrderNumber(orderNumber);
 	   return ResponseEntity.ok(ApiResponseDTO.success(order));
    }
    
-   @PreAuthorize("hasRole('USER')")
+   @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @GetMapping("/user/{userId}")
    public ResponseEntity<ApiResponseDTO<List<OrderResponseDTO>>> getOrdersByUserId(@PathVariable Long userId){
 	   List<OrderResponseDTO> orders=serv.getOrdersByUserId(userId);
 	   return ResponseEntity.ok(ApiResponseDTO.success("Fetched "+orders.size()+" orders",orders));
    }
    
-   @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @GetMapping
    public ResponseEntity<ApiResponseDTO<PageResponseDTO<OrderResponseDTO>>> getAllOrdersPaginated(
 		   @RequestParam(defaultValue = "0") int page,
@@ -73,28 +73,28 @@ public class OrderController {
 	   return ResponseEntity.ok(ApiResponseDTO.success(orders));
    }
    
-   @PreAuthorize("hasRole('USER')")
+   @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @GetMapping("/status/{status}")
    public ResponseEntity<ApiResponseDTO<List<OrderResponseDTO>>> getOrdersByStatus(@PathVariable String status){
 	   List<OrderResponseDTO> orders=serv.getOrdersByStatus(status); 
 	   return ResponseEntity.ok(ApiResponseDTO.success(orders));
    }
    
-   @PreAuthorize("hasRole('USER')")
+   @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @PatchMapping("/{orderId}/status")
    public ResponseEntity<ApiResponseDTO<OrderResponseDTO>> updateOrderStatus(@PathVariable Long orderId ,@Valid @RequestBody UpdateOrderStatusRequestDTO dto){
 	   OrderResponseDTO order=serv.updateOrderStatus(orderId, dto);
 	   return ResponseEntity.ok(ApiResponseDTO.success("order status updated successfully",order));
    }
    
-   @PreAuthorize("hasRole('USER')")
+   @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @PostMapping("/{orderId}/cancel")
    public ResponseEntity<ApiResponseDTO<OrderResponseDTO>> cancelOrder(@PathVariable Long orderId,@RequestParam(required = false,defaultValue = "Customer requested cancellation")String reason){
 	   OrderResponseDTO order=serv.cancelOrder(orderId, reason);
 	   return ResponseEntity.ok(ApiResponseDTO.success("order cancelled successfully",order));
    }
    
-   @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
    @GetMapping("/search")
    public ResponseEntity<ApiResponseDTO<PageResponseDTO<OrderResponseDTO>>> searchOrders(
 		   @RequestParam String keyword,
