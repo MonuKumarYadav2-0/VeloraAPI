@@ -28,6 +28,7 @@ public class SecurityConfig {
                         "/",
                         "/index.html",
                         "/favicon.ico",
+                       "/favicon.svg",
                         "/fallback.png",
                         "/assets/**",
                         "/models/**"
