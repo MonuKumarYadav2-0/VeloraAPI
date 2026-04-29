@@ -62,21 +62,31 @@ public class SecurityConfig {
             )
 
             .formLogin(form -> form
-                .loginProcessingUrl("/auth/login")
-                .usernameParameter("email")
-                .passwordParameter("password")
-                .permitAll()
-                .successHandler((request, response, authentication) -> {
-                    response.setStatus(200);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"success\": true}");
-                })
-                .failureHandler((request, response, exception) -> {
-                    response.setStatus(401);
-                    response.setContentType("application/json");
-                    response.getWriter().write("{\"success\": false, \"message\": \"Invalid credentials\"}");
-                })
-            )
+            	    .loginPage("/login") // React route, no default Spring login page
+            	    .loginProcessingUrl("/auth/login")
+            	    .usernameParameter("email")
+            	    .passwordParameter("password")
+            	    .permitAll()
+            	    .successHandler((request, response, authentication) -> {
+            	        response.setStatus(200);
+            	        response.setContentType("application/json");
+            	        response.getWriter().write("{\"success\": true}");
+            	    })
+            	    .failureHandler((request, response, exception) -> {
+            	        response.setStatus(401);
+            	        response.setContentType("application/json");
+            	        response.getWriter().write("{\"success\": false, \"message\": \"Invalid credentials\"}");
+            	    })
+            	)
+
+            	.exceptionHandling(ex -> ex
+            	    .authenticationEntryPoint((request, response, authException) -> {
+            	        response.setStatus(401);
+            	        response.setContentType("application/json");
+            	        response.getWriter().write("{\"success\": false, \"message\": \"Unauthorized\"}");
+            	    })
+            	)
+
 
             .logout(logout -> logout
                 .logoutUrl("/auth/logout")
