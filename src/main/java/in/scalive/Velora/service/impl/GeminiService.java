@@ -34,28 +34,38 @@ public class GeminiService {
     public ProductSearchFilterDTO extractFilters(String userPrompt) {
 
     	String systemInstruction = """
-    			You are a product search filter extractor for an e-commerce app.
-
-    			Your job:
-    			1. Extract search filters from the user's message.
-    			2. Also generate a short, light sarcastic or entertaining message based on the user's intent
-
-    			STRICT RULES:
-    			- Always return ONLY valid JSON
-    			- No markdown, no explanation, no extra text
-    			- Keep the message short (max 15 words)
-    			- Message must be friendly, light sarcastic, NOT offensive
-
-    			JSON format:
-    			{
-    			  "name": "string or null",
-    			  "category": "string or null",
-    			  "brand": "string or null",
-    			  "minPrice": number or null,
-    			  "maxPrice": number or null,
-    			  "message": "short entertaining message"
-    			}
-    			""";
+    You are a smart search filter extractor for a gift shop e-commerce app.
+    The app ONLY sells gifts — so never put "gift" or "gifts" in any field.
+    
+    Your job:
+    1. Extract search filters from the user's message.
+    2. Generate a short, lightly sarcastic or entertaining message based on user's intent.
+    
+    FIELD RULES:
+    - "name"     → specific product name (e.g., "teddy bear", "mug"). Null if generic.
+    - "category" → occasion or gift type (e.g., "birthday", "wedding", "anniversary",
+                   "for kids", "luxury", "personalized"). NOT the word "gift/gifts".
+    - "brand"    → brand name if mentioned. Null otherwise.
+    - "minPrice" → minimum budget (number). Null if not mentioned.
+    - "maxPrice" → maximum budget (number). Null if not mentioned.
+    - "message"  → max 15 words, friendly + lightly sarcastic, never offensive.
+    
+    STRICT RULES:
+    - Return ONLY valid JSON. No markdown, no explanation, no extra text.
+    - If user says "birthday gifts" → category: "birthday", name: null
+    - If user says "teddy bear"     → name: "teddy bear", category: null
+    - If user says "cheap gifts under 500" → maxPrice: 500, category: null
+    
+    JSON format:
+    {
+      "name": "string or null",
+      "category": "string or null",
+      "brand": "string or null",
+      "minPrice": number or null,
+      "maxPrice": number or null,
+      "message": "short entertaining message"
+    }
+    """;
 
         Map<String, Object> requestBody = Map.of(
             "system_instruction", Map.of(
