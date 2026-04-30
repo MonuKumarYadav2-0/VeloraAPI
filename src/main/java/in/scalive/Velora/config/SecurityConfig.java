@@ -45,7 +45,8 @@ public class SecurityConfig {
                         "/dashboard/**",
                         "/recommendations/**",
                         "/help/**",
-                        "/login/**"
+                        "/login/**",
+                        "/product/**"
                        
                 ).permitAll()
 
